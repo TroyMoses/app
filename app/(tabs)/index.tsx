@@ -34,10 +34,18 @@ export default function HomeScreen() {
     setResult("");
   };
 
-  const getPrediction = async (params: any) => {
+  const getPrediction = async (params: {
+    uri: string;
+    name: string;
+    type: string;
+  }) => {
     try {
       const bodyFormData = new FormData();
-      bodyFormData.append("file", params);
+      bodyFormData.append("file", {
+        uri: params.uri,
+        name: params.name,
+        type: params.type,
+      } as any);
 
       const url = Constants?.expoConfig?.extra?.API_URL;
       if (!url) {
@@ -68,10 +76,19 @@ export default function HomeScreen() {
     setLabel("Predicting...");
     setResult("");
 
+    const extension = asset.uri.split(".").pop()?.toLowerCase();
+    const mimeMap: Record<string, string> = {
+      jpg: "image/jpeg",
+      jpeg: "image/jpeg",
+      png: "image/png",
+    };
+
+    const type = mimeMap[extension ?? ""] ?? "image/jpeg";
+
     const file = {
       uri: asset.uri,
       name: asset.fileName ?? "image.jpg",
-      type: asset.type ?? "image/jpeg",
+      type,
     };
     await getPrediction(file);
   };
@@ -132,7 +149,7 @@ export default function HomeScreen() {
           <Text style={[styles.space, styles.labelText]}>
             Confidence:{"\n"}
             <Text style={styles.resultText}>
-              {parseFloat(result).toFixed(2)}%
+              {parseFloat(result).toFixed(6)}%
             </Text>
           </Text>
         </View>
@@ -140,7 +157,8 @@ export default function HomeScreen() {
         <Text style={styles.emptyText}>{label}</Text>
       ) : (
         <Text style={styles.emptyText}>
-          Use the buttons below to capture or select a picture of a potato plant leaf.
+          Use the buttons below to capture or select a picture of a potato plant
+          leaf.
         </Text>
       )}
 
@@ -215,7 +233,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   resultText: {
-    fontSize: 28,
+    fontSize: 25,
     fontWeight: "bold",
   },
   emptyText: {

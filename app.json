@@ -7,7 +7,11 @@
     "icon": "./assets/images/icon.png",
     "scheme": "app",
     "extra": {
-      "API_URL": "http://localhost:8000/predict"
+      "API_URL": "http://10.5.1.239:8000/predict",
+      "router": {},
+      "eas": {
+        "projectId": "badcda7e-8dd5-42a4-8cd9-b103e7a60e79"
+      }
     },
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -19,7 +23,8 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.troylegacy.app"
     },
     "web": {
       "bundler": "metro",
@@ -40,6 +45,8 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "assets": ["./assets/models/model.tflite"],
+    "permissions": ["INTERNET"]
   }
 }

@@ -31,3 +31,11 @@ export const diseases: Disease[] = [
   },
   // Add the rest here using the same structure...
 ];
+
+export const tipsOfTheDay = [
+  "Regularly inspect your plants for early signs of disease.",
+  "Water plants at the base to prevent leaf moisture.",
+  "Use certified disease-free seeds and tubers.",
+  "Maintain proper soil pH to enhance plant resistance.",
+  "Remove and destroy infected plant debris promptly.",
+];

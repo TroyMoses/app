@@ -1,179 +1,56 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
   Image,
-  ImageBackground,
-  Platform,
+  TouchableOpacity,
   Dimensions,
-  StatusBar,
-  useColorScheme,
-  Alert,
+  ImageBackground,
 } from "react-native";
-import * as ImagePicker from "expo-image-picker";
-import Constants from "expo-constants";
-import axios from "axios";
+import { useRouter } from "expo-router";
 
-const { height, width } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window");
 
 export default function HomeScreen() {
-  const isDarkMode = useColorScheme() === "dark";
-  const [image, setImage] = useState<string | null>(null);
-  const [label, setLabel] = useState("");
-  const [result, setResult] = useState("");
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? "#000" : "#FFF",
-  };
-
-  const clearOutput = () => {
-    setImage(null);
-    setLabel("");
-    setResult("");
-  };
-
-  const getPrediction = async (params: {
-    uri: string;
-    name: string;
-    type: string;
-  }) => {
-    try {
-      const bodyFormData = new FormData();
-      bodyFormData.append("file", {
-        uri: params.uri,
-        name: params.name,
-        type: params.type,
-      } as any);
-
-      const url = Constants?.expoConfig?.extra?.API_URL;
-      if (!url) {
-        Alert.alert("API_URL not found in app config");
-        return;
-      }
-
-      const response = await axios.post(url, bodyFormData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      if (response.data?.class) {
-        setLabel(response.data.class);
-        setResult(response.data.confidence);
-      } else {
-        setLabel("Failed to predict");
-      }
-    } catch (error) {
-      console.error(error);
-      setLabel("Failed to predict.");
-    }
-  };
-
-  const handleImageResult = async (pickerResult: any) => {
-    if (pickerResult.canceled) return;
-    const asset = pickerResult.assets[0];
-    setImage(asset.uri);
-    setLabel("Predicting...");
-    setResult("");
-
-    const extension = asset.uri.split(".").pop()?.toLowerCase();
-    const mimeMap: Record<string, string> = {
-      jpg: "image/jpeg",
-      jpeg: "image/jpeg",
-      png: "image/png",
-    };
-
-    const type = mimeMap[extension ?? ""] ?? "image/jpeg";
-
-    const file = {
-      uri: asset.uri,
-      name: asset.fileName ?? "image.jpg",
-      type,
-    };
-    await getPrediction(file);
-  };
-
-  const openCamera = async () => {
-    const { status } = await ImagePicker.requestCameraPermissionsAsync();
-    if (status !== "granted") {
-      Alert.alert("Camera access is required.");
-      return;
-    }
-    const result = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      base64: true,
-      quality: 1,
-    });
-    await handleImageResult(result);
-  };
-
-  const openGallery = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== "granted") {
-      Alert.alert("Media Library access is required.");
-      return;
-    }
-    const result = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: true,
-      base64: true,
-      quality: 1,
-    });
-    await handleImageResult(result);
-  };
+  const router = useRouter();
 
   return (
-    <View style={[styles.outer, backgroundStyle]}>
-      <StatusBar barStyle={isDarkMode ? "light-content" : "dark-content"} />
+    <View style={styles.container}>
       <ImageBackground
         source={require("@/assets/images/bg2.jpg")}
         style={styles.background}
-        blurRadius={10}
+        blurRadius={5}
       />
-      <Text style={styles.title}>Potato Disease{"\n"}Prediction App</Text>
-
-      <TouchableOpacity onPress={clearOutput} style={styles.clearStyle}>
+      <View style={styles.content}>
         <Image
-          source={require("@/assets/images/clean.png")}
-          style={styles.clearImage}
+          source={require("@/assets/images/icon.png")}
+          style={styles.logo}
         />
-      </TouchableOpacity>
-
-      {image && <Image source={{ uri: image }} style={styles.imageStyle} />}
-
-      {result && label ? (
-        <View style={styles.mainOuter}>
-          <Text style={[styles.space, styles.labelText]}>
-            Label:{"\n"}
-            <Text style={styles.resultText}>{label}</Text>
-          </Text>
-          <Text style={[styles.space, styles.labelText]}>
-            Confidence:{"\n"}
-            <Text style={styles.resultText}>
-              {parseFloat(result).toFixed(6)}%
-            </Text>
-          </Text>
-        </View>
-      ) : image ? (
-        <Text style={styles.emptyText}>{label}</Text>
-      ) : (
-        <Text style={styles.emptyText}>
-          Use the buttons below to capture or select a picture of a potato plant
-          leaf.
+        <Text style={styles.title}>Potato Disease Detection</Text>
+        <Text style={styles.subtitle}>
+          Identify potato plant diseases instantly with AI.
         </Text>
-      )}
 
-      <View style={styles.btn}>
-        <TouchableOpacity style={styles.btnStyle} onPress={openCamera}>
-          <Image
-            source={require("@/assets/images/camera.png")}
-            style={styles.imageIcon}
-          />
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => router.push("/(tabs)/predict")}
+        >
+          <Text style={styles.buttonText}>Start Prediction</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.btnStyle} onPress={openGallery}>
-          <Image
-            source={require("@/assets/images/gallery.png")}
-            style={styles.imageIcon}
-          />
+
+        <TouchableOpacity
+          style={styles.buttonOutline}
+          onPress={() => router.push("/(tabs)/explore")}
+        >
+          <Text style={styles.buttonOutlineText}>Explore Diseases</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.link}
+          onPress={() => router.push("/(tabs)/about")}
+        >
+          <Text style={styles.linkText}>About the App</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -181,88 +58,68 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  outer: {
+  container: {
     flex: 1,
-    alignItems: "center",
+    position: "relative",
     justifyContent: "center",
+    alignItems: "center",
   },
   background: {
     position: "absolute",
     width,
     height,
   },
+  content: {
+    alignItems: "center",
+    paddingHorizontal: 30,
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    resizeMode: "contain",
+    marginBottom: 20,
+  },
   title: {
-    position: "absolute",
-    top: Platform.OS === "ios" ? 50 : 30,
     fontSize: 28,
     fontWeight: "bold",
-    textAlign: "center",
     color: "#FFF",
+    textAlign: "center",
+  },
+  subtitle: {
+    fontSize: 16,
+    color: "#DDD",
+    marginVertical: 10,
+    textAlign: "center",
+  },
+  button: {
+    backgroundColor: "#007AFF",
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 10,
     marginTop: 20,
   },
-  clearStyle: {
-    position: "absolute",
-    top: 100,
-    right: 30,
-    zIndex: 10,
+  buttonText: {
+    color: "#FFF",
+    fontWeight: "bold",
+    fontSize: 16,
   },
-  clearImage: {
-    height: 40,
-    width: 40,
-    tintColor: "#FFF",
-  },
-  imageStyle: {
-    width: width * 0.7,
-    height: width * 0.7,
-    borderRadius: 20,
+  buttonOutline: {
     borderColor: "#FFF",
-    borderWidth: 0.3,
-    position: "absolute",
-    top: height / 4.5,
+    borderWidth: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 10,
+    marginTop: 15,
   },
-  mainOuter: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    position: "absolute",
-    top: height / 1.6,
-    alignSelf: "center",
-  },
-  labelText: {
+  buttonOutlineText: {
     color: "#FFF",
-    fontSize: 18,
-    fontWeight: "bold",
+    fontSize: 16,
   },
-  resultText: {
-    fontSize: 25,
-    fontWeight: "bold",
+  link: {
+    marginTop: 30,
   },
-  emptyText: {
-    position: "absolute",
-    top: height / 1.6,
-    textAlign: "center",
-    color: "#FFF",
-    fontSize: 18,
-    paddingHorizontal: 20,
-    fontWeight: "bold",
-  },
-  btn: {
-    position: "absolute",
-    bottom: 40,
-    flexDirection: "row",
-  },
-  btnStyle: {
-    backgroundColor: "#FFF",
-    opacity: 0.8,
-    marginHorizontal: 20,
-    padding: 20,
-    borderRadius: 20,
-  },
-  imageIcon: {
-    height: 60,
-    width: 60,
-    tintColor: "#000",
-  },
-  space: {
-    marginHorizontal: 10,
+  linkText: {
+    color: "#EEE",
+    textDecorationLine: "underline",
   },
 });

@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "Potato Disease Detection",
-    "slug": "potato-disease-detection",
+    "name": "Legacy Potato Doctor",
+    "slug": "legacy-potato-doctor",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "potato-disease-detection",
+    "scheme": "legacy-potato-doctor",
     "extra": {
       "API_URL": "http://10.5.1.239:8000/predict",
       "router": {},

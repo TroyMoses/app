@@ -25,6 +25,7 @@ import {
   GestureDetector,
   Directions,
 } from "react-native-gesture-handler";
+import axios from "axios";
 
 import { TipOfTheDay } from "@/components/TipOfTheDay";
 import { IconSymbol } from "@/components/ui/IconSymbol";
@@ -105,7 +106,6 @@ export default function PredictScreen() {
       }, 1500);
 
       // Uncomment for actual API call
-      /*
       const response = await axios.post(url, bodyFormData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -117,7 +117,6 @@ export default function PredictScreen() {
         setLabel("Failed to predict");
       }
       setIsLoading(false);
-      */
     } catch (error) {
       console.error(error);
       setLabel("Failed to predict.");

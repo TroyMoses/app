@@ -228,92 +228,98 @@ export default function PredictScreen() {
         <IconSymbol name="trash.fill" size={24} color="#FFF" />
       </TouchableOpacity>
 
-      <GestureDetector gesture={swipeGesture}>
-        <View style={styles.imageContainer}>
-          {image ? (
-            <Animated.Image
-              entering={FadeIn.duration(300)}
-              source={{ uri: image }}
-              style={styles.imageStyle}
-            />
-          ) : (
-            <View style={styles.placeholderContainer}>
-              <IconSymbol
-                name="camera.fill"
-                size={40}
-                color="rgba(255, 255, 255, 0.5)"
+      <ScrollView
+        style={styles.scrollContainer}
+        contentContainerStyle={{ paddingBottom: 100 }}
+        showsVerticalScrollIndicator={false}
+      >
+        <GestureDetector gesture={swipeGesture}>
+          <View style={styles.imageContainer}>
+            {image ? (
+              <Animated.Image
+                entering={FadeIn.duration(300)}
+                source={{ uri: image }}
+                style={styles.imageStyle}
               />
-              <Text style={styles.placeholderText}>
-                Take or select a photo to analyze
-              </Text>
-            </View>
-          )}
-        </View>
-      </GestureDetector>
-
-      {isLoading ? (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#FFF" />
-          <Text style={styles.loadingText}>Analyzing image...</Text>
-        </View>
-      ) : result && label ? (
-        <Animated.View
-          entering={FadeInUp.duration(500)}
-          style={styles.resultContainer}
-        >
-          <View style={styles.resultCard}>
-            <Text style={styles.resultTitle}>Analysis Results</Text>
-            <View style={styles.resultRow}>
-              <Text style={styles.labelText}>Disease:</Text>
-              <Text style={styles.resultValue}>{label}</Text>
-            </View>
-            <View style={styles.resultRow}>
-              <Text style={styles.labelText}>Confidence:</Text>
-              <Text style={styles.resultValue}>
-                {Number.parseFloat(result).toFixed(1)}%
-              </Text>
-            </View>
-            <View style={styles.confidenceMeter}>
-              <View
-                style={[
-                  styles.confidenceFill,
-                  { width: `${Math.min(Number.parseFloat(result), 100)}%` },
-                ]}
-              />
-            </View>
+            ) : (
+              <View style={styles.placeholderContainer}>
+                <IconSymbol
+                  name="camera.fill"
+                  size={40}
+                  color="rgba(255, 255, 255, 0.5)"
+                />
+                <Text style={styles.placeholderText}>
+                  Take or select a photo to analyze
+                </Text>
+              </View>
+            )}
           </View>
-        </Animated.View>
-      ) : image ? (
-        <Text style={styles.emptyText}>{label}</Text>
-      ) : (
-        <Text style={styles.emptyText}>
-          Swipe left or right on an image to clear it.
-        </Text>
-      )}
+        </GestureDetector>
 
-      {recentImages.length > 0 && !image && (
-        <Animated.View
-          entering={FadeInUp.delay(200).duration(500)}
-          style={styles.recentContainer}
-        >
-          <Text style={styles.recentTitle}>Recent Images</Text>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.recentScroll}
+        {isLoading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#FFF" />
+            <Text style={styles.loadingText}>Analyzing image...</Text>
+          </View>
+        ) : result && label ? (
+          <Animated.View
+            entering={FadeInUp.duration(500)}
+            style={styles.resultContainer}
           >
-            {recentImages.map((uri, index) => (
-              <TouchableOpacity
-                key={index}
-                style={styles.recentImageContainer}
-                onPress={() => selectRecentImage(uri)}
-              >
-                <Image source={{ uri }} style={styles.recentImage} />
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </Animated.View>
-      )}
+            <View style={styles.resultCard}>
+              <Text style={styles.resultTitle}>Analysis Results</Text>
+              <View style={styles.resultRow}>
+                <Text style={styles.labelText}>Disease:</Text>
+                <Text style={styles.resultValue}>{label}</Text>
+              </View>
+              <View style={styles.resultRow}>
+                <Text style={styles.labelText}>Confidence:</Text>
+                <Text style={styles.resultValue}>
+                  {Number.parseFloat(result).toFixed(1)}%
+                </Text>
+              </View>
+              <View style={styles.confidenceMeter}>
+                <View
+                  style={[
+                    styles.confidenceFill,
+                    { width: `${Math.min(Number.parseFloat(result), 100)}%` },
+                  ]}
+                />
+              </View>
+            </View>
+          </Animated.View>
+        ) : image ? (
+          <Text style={styles.emptyText}>{label}</Text>
+        ) : (
+          <Text style={styles.emptyText}>
+            Swipe left or right on an image to clear it.
+          </Text>
+        )}
+
+        {recentImages.length > 0 && !image && (
+          <Animated.View
+            entering={FadeInUp.delay(200).duration(500)}
+            style={styles.recentContainer}
+          >
+            <Text style={styles.recentTitle}>Recent Images</Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.recentScroll}
+            >
+              {recentImages.map((uri, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={styles.recentImageContainer}
+                  onPress={() => selectRecentImage(uri)}
+                >
+                  <Image source={{ uri }} style={styles.recentImage} />
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </Animated.View>
+        )}
+      </ScrollView>
 
       <Animated.View
         entering={FadeInUp.delay(300).duration(500)}
@@ -406,6 +412,7 @@ const styles = StyleSheet.create({
   resultContainer: {
     alignItems: "center",
     marginTop: 20,
+    marginBottom: 100,
     paddingHorizontal: 20,
   },
   resultCard: {
@@ -488,11 +495,12 @@ const styles = StyleSheet.create({
   },
   btn: {
     position: "absolute",
-    bottom: 40,
+    bottom: 20,
     left: 0,
     right: 0,
     flexDirection: "row",
     justifyContent: "center",
+    zIndex: 10,
   },
   btnStyle: {
     backgroundColor: "rgba(255, 255, 255, 0.9)",
@@ -512,5 +520,8 @@ const styles = StyleSheet.create({
     color: "#333",
     fontFamily: "Poppins-Medium",
     fontSize: 14,
+  },
+  scrollContainer: {
+    flex: 1,
   },
 });

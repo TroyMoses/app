@@ -2,6 +2,10 @@
 
 A modern React Native mobile application that uses AI-powered image recognition to help farmers identify common potato plant diseases. Built with Expo and featuring a sleek, user-friendly interface with advanced gesture controls and bookmarking capabilities.
 
+![React Native](https://img.shields.io/badge/React%20Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=for-the-badge&logo=typescript)
+![NativeWind](https://img.shields.io/badge/NativeWind-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+
 ## 📱 Features
 
 ### Core Functionality

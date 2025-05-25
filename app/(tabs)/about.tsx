@@ -84,7 +84,7 @@ export default function AboutScreen() {
           <Text style={styles.subtitle}>Contact Us</Text>
           <TouchableOpacity onPress={openEmail} style={styles.contactButton}>
             <Text style={styles.contactButtonText}>
-              Email: troylegacy@example.com
+              Email: troylegacy256@gmail.com
             </Text>
           </TouchableOpacity>
 

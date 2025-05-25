@@ -25,6 +25,7 @@ import {
   GestureDetector,
   Directions,
 } from "react-native-gesture-handler";
+import axios from "axios";
 
 import { TipOfTheDay } from "@/components/TipOfTheDay";
 import { IconSymbol } from "@/components/ui/IconSymbol";
@@ -57,6 +58,32 @@ export default function PredictScreen() {
     setResult("");
   };
 
+  // Function to convert confidence to percentage
+  const formatConfidence = (confidenceValue: string) => {
+    const numValue = Number.parseFloat(confidenceValue);
+
+    // If the value is between 0 and 1, treat it as a decimal (multiply by 100)
+    if (numValue >= 0 && numValue <= 1) {
+      return (numValue * 100).toFixed(0);
+    }
+
+    // If the value is already a percentage (greater than 1), just round it
+    return numValue.toFixed(0);
+  };
+
+  // Function to get the actual percentage value for the progress bar
+  const getConfidencePercentage = (confidenceValue: string) => {
+    const numValue = Number.parseFloat(confidenceValue);
+
+    // If the value is between 0 and 1, treat it as a decimal (multiply by 100)
+    if (numValue >= 0 && numValue <= 1) {
+      return numValue * 100;
+    }
+
+    // If the value is already a percentage, return as is
+    return numValue;
+  };
+
   const getPrediction = async (params: {
     uri: string;
     name: string;
@@ -79,33 +106,32 @@ export default function PredictScreen() {
       }
 
       // Simulate API call with a delay
-      setTimeout(() => {
-        // Mock response based on the image
-        const mockResponses = {
-          "early-blight": { class: "Early Blight", confidence: "92.5" },
-          "late-blight": { class: "Late Blight", confidence: "89.7" },
-          "leaf-roll": { class: "Leaf Roll", confidence: "95.2" },
-          septoria: { class: "Septoria Leaf Spot", confidence: "87.3" },
-          psyllid: { class: "Psyllid", confidence: "91.8" },
-          default: { class: "Healthy", confidence: "96.3" },
-        };
+      // setTimeout(() => {
+      //   // Mock response based on the image
+      //   const mockResponses = {
+      //     "early-blight": { class: "Early Blight", confidence: "0.925" },
+      // "late-blight": { class: "Late Blight", confidence: "0.897" },
+      // "leaf-roll": { class: "Leaf Roll", confidence: "0.952" },
+      // septoria: { class: "Septoria Leaf Spot", confidence: "0.873" },
+      // psyllid: { class: "Psyllid", confidence: "0.918" },
+      // default: { class: "Healthy", confidence: "0.963" },
+      //   };
 
-        // Determine which mock response to use based on the image URI
-        let responseData = mockResponses.default;
-        for (const key of Object.keys(mockResponses)) {
-          if (params.uri.includes(key)) {
-            responseData = mockResponses[key as keyof typeof mockResponses];
-            break;
-          }
-        }
+      //   // Determine which mock response to use based on the image URI
+      //   let responseData = mockResponses.default;
+      //   for (const key of Object.keys(mockResponses)) {
+      //     if (params.uri.includes(key)) {
+      //       responseData = mockResponses[key as keyof typeof mockResponses];
+      //       break;
+      //     }
+      //   }
 
-        setLabel(responseData.class);
-        setResult(responseData.confidence);
-        setIsLoading(false);
-      }, 1500);
+      //   setLabel(responseData.class);
+      //   setResult(responseData.confidence);
+      //   setIsLoading(false);
+      // }, 1500);
 
       // Uncomment for actual API call
-      /*
       const response = await axios.post(url, bodyFormData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -117,7 +143,6 @@ export default function PredictScreen() {
         setLabel("Failed to predict");
       }
       setIsLoading(false);
-      */
     } catch (error) {
       console.error(error);
       setLabel("Failed to predict.");
@@ -229,92 +254,103 @@ export default function PredictScreen() {
         <IconSymbol name="trash.fill" size={24} color="#FFF" />
       </TouchableOpacity>
 
-      <GestureDetector gesture={swipeGesture}>
-        <View style={styles.imageContainer}>
-          {image ? (
-            <Animated.Image
-              entering={FadeIn.duration(300)}
-              source={{ uri: image }}
-              style={styles.imageStyle}
-            />
-          ) : (
-            <View style={styles.placeholderContainer}>
-              <IconSymbol
-                name="camera.fill"
-                size={40}
-                color="rgba(255, 255, 255, 0.5)"
+      <ScrollView
+        style={styles.scrollContainer}
+        contentContainerStyle={{ paddingBottom: 100 }}
+        showsVerticalScrollIndicator={false}
+      >
+        <GestureDetector gesture={swipeGesture}>
+          <View style={styles.imageContainer}>
+            {image ? (
+              <Animated.Image
+                entering={FadeIn.duration(300)}
+                source={{ uri: image }}
+                style={styles.imageStyle}
               />
-              <Text style={styles.placeholderText}>
-                Take or select a photo to analyze
-              </Text>
-            </View>
-          )}
-        </View>
-      </GestureDetector>
-
-      {isLoading ? (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#FFF" />
-          <Text style={styles.loadingText}>Analyzing image...</Text>
-        </View>
-      ) : result && label ? (
-        <Animated.View
-          entering={FadeInUp.duration(500)}
-          style={styles.resultContainer}
-        >
-          <View style={styles.resultCard}>
-            <Text style={styles.resultTitle}>Analysis Results</Text>
-            <View style={styles.resultRow}>
-              <Text style={styles.labelText}>Disease:</Text>
-              <Text style={styles.resultValue}>{label}</Text>
-            </View>
-            <View style={styles.resultRow}>
-              <Text style={styles.labelText}>Confidence:</Text>
-              <Text style={styles.resultValue}>
-                {Number.parseFloat(result).toFixed(1)}%
-              </Text>
-            </View>
-            <View style={styles.confidenceMeter}>
-              <View
-                style={[
-                  styles.confidenceFill,
-                  { width: `${Math.min(Number.parseFloat(result), 100)}%` },
-                ]}
-              />
-            </View>
+            ) : (
+              <View style={styles.placeholderContainer}>
+                <IconSymbol
+                  name="camera.fill"
+                  size={40}
+                  color="rgba(255, 255, 255, 0.5)"
+                />
+                <Text style={styles.placeholderText}>
+                  Take or select a photo to analyze
+                </Text>
+              </View>
+            )}
           </View>
-        </Animated.View>
-      ) : image ? (
-        <Text style={styles.emptyText}>{label}</Text>
-      ) : (
-        <Text style={styles.emptyText}>
-          Swipe left or right on an image to clear it.
-        </Text>
-      )}
+        </GestureDetector>
 
-      {recentImages.length > 0 && !image && (
-        <Animated.View
-          entering={FadeInUp.delay(200).duration(500)}
-          style={styles.recentContainer}
-        >
-          <Text style={styles.recentTitle}>Recent Images</Text>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.recentScroll}
+        {isLoading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#FFF" />
+            <Text style={styles.loadingText}>Analyzing image...</Text>
+          </View>
+        ) : result && label ? (
+          <Animated.View
+            entering={FadeInUp.duration(500)}
+            style={styles.resultContainer}
           >
-            {recentImages.map((uri, index) => (
-              <TouchableOpacity
-                key={index}
-                style={styles.recentImageContainer}
-                onPress={() => selectRecentImage(uri)}
-              >
-                <Image source={{ uri }} style={styles.recentImage} />
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </Animated.View>
-      )}
+            <View style={styles.resultCard}>
+              <Text style={styles.resultTitle}>Analysis Results</Text>
+              <View style={styles.resultRow}>
+                <Text style={styles.labelText}>Disease:</Text>
+                <Text style={styles.resultValue}>{label}</Text>
+              </View>
+              <View style={styles.resultRow}>
+                <Text style={styles.labelText}>Confidence:</Text>
+                <Text style={styles.resultValue}>
+                  {formatConfidence(result)}%
+                </Text>
+              </View>
+              <View style={styles.confidenceMeter}>
+                <View
+                  style={[
+                    styles.confidenceFill,
+                    {
+                      width: `${Math.min(
+                        getConfidencePercentage(result),
+                        100
+                      )}%`,
+                    },
+                  ]}
+                />
+              </View>
+            </View>
+          </Animated.View>
+        ) : image ? (
+          <Text style={styles.emptyText}>{label}</Text>
+        ) : (
+          <Text style={styles.emptyText}>
+            Swipe left or right on an image to clear it.
+          </Text>
+        )}
+
+        {recentImages.length > 0 && !image && (
+          <Animated.View
+            entering={FadeInUp.delay(200).duration(500)}
+            style={styles.recentContainer}
+          >
+            <Text style={styles.recentTitle}>Recent Images</Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.recentScroll}
+            >
+              {recentImages.map((uri, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={styles.recentImageContainer}
+                  onPress={() => selectRecentImage(uri)}
+                >
+                  <Image source={{ uri }} style={styles.recentImage} />
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </Animated.View>
+        )}
+      </ScrollView>
 
       <Animated.View
         entering={FadeInUp.delay(300).duration(500)}
@@ -407,6 +443,7 @@ const styles = StyleSheet.create({
   resultContainer: {
     alignItems: "center",
     marginTop: 20,
+    marginBottom: 100,
     paddingHorizontal: 20,
   },
   resultCard: {
@@ -489,11 +526,12 @@ const styles = StyleSheet.create({
   },
   btn: {
     position: "absolute",
-    bottom: 40,
+    bottom: 20,
     left: 0,
     right: 0,
     flexDirection: "row",
     justifyContent: "center",
+    zIndex: 10,
   },
   btnStyle: {
     backgroundColor: "rgba(255, 255, 255, 0.9)",
@@ -513,5 +551,8 @@ const styles = StyleSheet.create({
     color: "#333",
     fontFamily: "Poppins-Medium",
     fontSize: 14,
+  },
+  scrollContainer: {
+    flex: 1,
   },
 });

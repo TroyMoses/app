@@ -1,4 +1,4 @@
-# 🥔 Potato Disease Detection App
+# 🥔 Legacy Potato Doctor
 
 A modern React Native mobile application that uses AI-powered image recognition to help farmers identify common potato plant diseases. Built with Expo and featuring a sleek, user-friendly interface with advanced gesture controls and bookmarking capabilities.
 

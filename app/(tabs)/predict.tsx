@@ -58,6 +58,32 @@ export default function PredictScreen() {
     setResult("");
   };
 
+  // Function to convert confidence to percentage
+  const formatConfidence = (confidenceValue: string) => {
+    const numValue = Number.parseFloat(confidenceValue);
+
+    // If the value is between 0 and 1, treat it as a decimal (multiply by 100)
+    if (numValue >= 0 && numValue <= 1) {
+      return (numValue * 100).toFixed(0);
+    }
+
+    // If the value is already a percentage (greater than 1), just round it
+    return numValue.toFixed(0);
+  };
+
+  // Function to get the actual percentage value for the progress bar
+  const getConfidencePercentage = (confidenceValue: string) => {
+    const numValue = Number.parseFloat(confidenceValue);
+
+    // If the value is between 0 and 1, treat it as a decimal (multiply by 100)
+    if (numValue >= 0 && numValue <= 1) {
+      return numValue * 100;
+    }
+
+    // If the value is already a percentage, return as is
+    return numValue;
+  };
+
   const getPrediction = async (params: {
     uri: string;
     name: string;
@@ -80,30 +106,30 @@ export default function PredictScreen() {
       }
 
       // Simulate API call with a delay
-      setTimeout(() => {
-        // Mock response based on the image
-        const mockResponses = {
-          "early-blight": { class: "Early Blight", confidence: "92.5" },
-          "late-blight": { class: "Late Blight", confidence: "89.7" },
-          "leaf-roll": { class: "Leaf Roll", confidence: "95.2" },
-          septoria: { class: "Septoria Leaf Spot", confidence: "87.3" },
-          psyllid: { class: "Psyllid", confidence: "91.8" },
-          default: { class: "Healthy", confidence: "96.3" },
-        };
+      // setTimeout(() => {
+      //   // Mock response based on the image
+      //   const mockResponses = {
+      //     "early-blight": { class: "Early Blight", confidence: "0.925" },
+      // "late-blight": { class: "Late Blight", confidence: "0.897" },
+      // "leaf-roll": { class: "Leaf Roll", confidence: "0.952" },
+      // septoria: { class: "Septoria Leaf Spot", confidence: "0.873" },
+      // psyllid: { class: "Psyllid", confidence: "0.918" },
+      // default: { class: "Healthy", confidence: "0.963" },
+      //   };
 
-        // Determine which mock response to use based on the image URI
-        let responseData = mockResponses.default;
-        for (const key of Object.keys(mockResponses)) {
-          if (params.uri.includes(key)) {
-            responseData = mockResponses[key as keyof typeof mockResponses];
-            break;
-          }
-        }
+      //   // Determine which mock response to use based on the image URI
+      //   let responseData = mockResponses.default;
+      //   for (const key of Object.keys(mockResponses)) {
+      //     if (params.uri.includes(key)) {
+      //       responseData = mockResponses[key as keyof typeof mockResponses];
+      //       break;
+      //     }
+      //   }
 
-        setLabel(responseData.class);
-        setResult(responseData.confidence);
-        setIsLoading(false);
-      }, 1500);
+      //   setLabel(responseData.class);
+      //   setResult(responseData.confidence);
+      //   setIsLoading(false);
+      // }, 1500);
 
       // Uncomment for actual API call
       const response = await axios.post(url, bodyFormData, {
@@ -275,14 +301,19 @@ export default function PredictScreen() {
               <View style={styles.resultRow}>
                 <Text style={styles.labelText}>Confidence:</Text>
                 <Text style={styles.resultValue}>
-                  {Number.parseFloat(result).toFixed(1)}%
+                  {formatConfidence(result)}%
                 </Text>
               </View>
               <View style={styles.confidenceMeter}>
                 <View
                   style={[
                     styles.confidenceFill,
-                    { width: `${Math.min(Number.parseFloat(result), 100)}%` },
+                    {
+                      width: `${Math.min(
+                        getConfidencePercentage(result),
+                        100
+                      )}%`,
+                    },
                   ]}
                 />
               </View>

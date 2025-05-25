@@ -1,0 +1,94 @@
+MIT License
+
+Copyright (c) 2025 TroyLegacy
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+## Third-Party Licenses
+
+This project includes third-party software components that are subject to their own licenses:
+
+### Expo SDK
+- License: MIT License
+- Copyright (c) 2015-present 650 Industries, Inc. (aka Expo)
+- Source: https://github.com/expo/expo
+
+### React Native
+- License: MIT License
+- Copyright (c) Meta Platforms, Inc. and affiliates
+- Source: https://github.com/facebook/react-native
+
+### React Native Gesture Handler
+- License: MIT License
+- Copyright (c) 2016 Software Mansion
+- Source: https://github.com/software-mansion/react-native-gesture-handler
+
+### React Native Reanimated
+- License: MIT License
+- Copyright (c) 2016 Software Mansion
+- Source: https://github.com/software-mansion/react-native-reanimated
+
+### React Native Async Storage
+- License: MIT License
+- Copyright (c) 2015-present, Facebook, Inc.
+- Source: https://github.com/react-native-async-storage/async-storage
+
+### Expo Image Picker
+- License: MIT License
+- Copyright (c) 2015-present 650 Industries, Inc. (aka Expo)
+- Source: https://github.com/expo/expo
+
+### Poppins Font
+- License: SIL Open Font License 1.1
+- Copyright (c) 2014, Indian Type Foundry
+- Source: https://fonts.google.com/specimen/Poppins
+
+### Space Mono Font
+- License: SIL Open Font License 1.1
+- Copyright (c) 2016, Google Inc.
+- Source: https://fonts.google.com/specimen/Space+Mono
+
+### Disease Images
+- The disease reference images used in this application are for educational purposes only
+- Images may be subject to their respective copyright holders
+- Commercial use may require additional licensing
+
+### Icons
+- SF Symbols: Copyright (c) Apple Inc. - Used under Apple's SF Symbols License
+- Material Design Icons: Copyright (c) Google Inc. - Licensed under Apache License 2.0
+
+## Attribution Requirements
+
+When using this software, please include the following attribution:
+
+"Potato Disease Detection App developed by TroyLegacy"
+
+## Disclaimer
+
+This software is provided for educational and research purposes. The disease identification results should not be considered as professional agricultural advice. Always consult with qualified agricultural professionals for accurate disease diagnosis and treatment recommendations.
+
+The developers and contributors of this software are not responsible for any agricultural decisions made based on the app's predictions or any resulting crop losses or damages.
+
+## Contact
+
+For licensing inquiries or questions about this software, please contact:
+- Email: troylegacy256@gmail.com
+- Website: https://troylegacy.vercel.app

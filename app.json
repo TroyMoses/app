@@ -7,7 +7,7 @@
     "icon": "./assets/images/icon.png",
     "scheme": "legacy-potato-doctor",
     "extra": {
-      "API_URL": "http://10.5.1.239:8000/predict",
+      "API_URL": "https://potatodoctor.onrender.com/predict",
       "router": {},
       "eas": {
         "projectId": "badcda7e-8dd5-42a4-8cd9-b103e7a60e79"
